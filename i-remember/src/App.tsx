@@ -1,35 +1,26 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Scene from './components/Scene';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div style={{ 
+      width: "100vw", 
+      height: "100vh", 
+      background: "#000000" // 确保黑色背景
+    }}>
+      <Scene />
+      {/* 强制显示加载提示 */}
+      <div style={{ 
+        position: "fixed", 
+        top: 20, 
+        left: 20, 
+        color: "white", 
+        zIndex: 1000,
+        fontFamily: 'Arial'
+      }}>
+        🚀 3D Scene Loaded. {import.meta.env.DEV ? '(Development Mode)' : ''}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
