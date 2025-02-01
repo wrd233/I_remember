@@ -2,8 +2,10 @@ from flask import Flask, request, jsonify
 import os
 import json
 from datetime import datetime
+from flask_cors import CORS  # 添加 CORS 支持
 
 app = Flask(__name__)
+CORS(app)  # 启用 CORS
 
 # 存储图片的目录
 UPLOAD_FOLDER = "static/uploads"
