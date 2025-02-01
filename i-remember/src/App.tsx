@@ -1,4 +1,5 @@
 import Scene from './components/Scene';
+import DataFetchTest from './components/DataFetchTest'; // 导入测试组件
 
 function App() {
   return (
@@ -8,6 +9,8 @@ function App() {
       background: "#000000" // 确保黑色背景
     }}>
       <Scene />
+      {/* 临时挂载测试组件 */}
+      <DataFetchTest />
       {/* 强制显示加载提示 */}
       <div style={{ 
         position: "fixed", 

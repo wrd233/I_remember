@@ -1,60 +1,38 @@
-import React, { useEffect } from 'react';
-import memories from '../data/memories.ts'; // 导入记忆数据
+import React, { useEffect, useState } from 'react';
+// 使用完整的 Memory 类型
+import { Memory } from '../types/memory';
 
 interface MemoryPanelProps {
-  memoryId: number | null;
+  memory: Memory | null; // 修改为直接传递 Memory 对象
   onClose: () => void;
 }
 
-const MemoryPanel: React.FC<MemoryPanelProps> = ({ memoryId, onClose }) => {
-  const memory = memories.find((m) => m.id === memoryId);
+const MemoryPanel: React.FC<MemoryPanelProps> = ({ memory, onClose }) => {
+  if (!memory) return null;
 
-  // 监听键盘事件，按下 Esc 键关闭面板
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onClose]);
-
-  if (!memory) {
-    return null;
-  }
+  // 图片轮播状态
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   return (
     <>
-      {/* 模糊背景层 */}
       <div style={styles.overlay} onClick={onClose} />
-      {/* 记忆面板 */}
       <div style={styles.panel}>
-        {/* 标题区域 */}
         <div style={styles.titleContainer}>
           <h1 style={styles.title}>{memory.title}</h1>
         </div>
-
-        {/* 内容区域 */}
         <div style={styles.content}>
-          {/* 图片轮播区域 */}
           <div style={styles.imageCarousel}>
+            <button onClick={() => setCurrentImageIndex((prev) => Math.max(0, prev - 1))}>←</button>
             <img
-              src={memory.imageUrls[0]}
+              src={memory.imageUrls[currentImageIndex]}
               alt={memory.title}
               style={styles.image}
             />
+            <button onClick={() => setCurrentImageIndex((prev) => Math.min(memory.imageUrls.length - 1, prev + 1))}>→</button>
           </div>
-
-          {/* 正文区域 */}
           <div style={styles.textContainer}>
-            <div style={styles.paperBackground}>
-              {/* 正文内容 */}
-              <div style={styles.contentText}>{memory.content}</div>
-              {/* 日期 */}
-              <div style={styles.date}>{memory.date}</div>
-            </div>
+            <div style={styles.contentText}>{memory.content}</div>
+            <div style={styles.date}>{memory.date}</div>
           </div>
         </div>
       </div>

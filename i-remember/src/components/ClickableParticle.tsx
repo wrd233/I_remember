@@ -1,4 +1,4 @@
-import { forwardRef, useRef, useImperativeHandle, useEffect } from 'react';
+import { forwardRef, useRef, useImperativeHandle } from 'react';
 import { Mesh } from 'three';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
@@ -10,36 +10,41 @@ interface ClickableParticleProps {
 
 const ClickableParticle = forwardRef<Mesh, ClickableParticleProps>(({ position, isClicked }, ref) => {
   const meshRef = useRef<Mesh>(null);
+  const materialRef = useRef<THREE.MeshBasicMaterial>(null);
 
-  // 将 meshRef 暴露给父组件
   useImperativeHandle(ref, () => meshRef.current!);
 
-  // 简单悬浮动画
+  // 闪烁动画
   useFrame(({ clock }) => {
     if (meshRef.current) {
+      // 悬浮动画
       meshRef.current.position.y = position.y + Math.sin(clock.elapsedTime * 2) * 0.3;
 
-      // 点击反馈：短暂缩放
+      // 点击缩放
       if (isClicked) {
         const scale = 1.0 + Math.sin(clock.elapsedTime * 10) * 0.2;
         meshRef.current.scale.set(scale, scale, scale);
       } else {
-        meshRef.current.scale.set(1, 1, 1); // 恢复原始大小
+        meshRef.current.scale.set(1, 1, 1);
+      }
+
+      // 红色闪烁（透明度变化）
+      if (materialRef.current) {
+        const alpha = 0.7 + Math.sin(clock.elapsedTime * 5) * 0.3;
+        materialRef.current.opacity = alpha;
       }
     }
   });
 
-  // 点击反馈：变色
-  const color = isClicked ? 'yellow' : 'red';
-
   return (
-    <mesh
-      ref={meshRef}
-      position={position}
-      visible={true} // 临时可见，用于调试
-    >
-      <planeGeometry args={[0.5, 0.5]} />
-      <meshBasicMaterial color={color} transparent opacity={0.5} />
+    <mesh ref={meshRef} position={position}>
+      <sphereGeometry args={[0.2, 16, 16]} /> {/* 调整为小球体 */}
+      <meshBasicMaterial
+        ref={materialRef}
+        color="#ff0000" // 纯红色
+        transparent
+        opacity={0.7}
+      />
     </mesh>
   );
 });
