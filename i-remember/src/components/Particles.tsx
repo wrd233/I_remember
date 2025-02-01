@@ -5,10 +5,10 @@ import * as THREE from 'three';
 import vertexShader from '../shaders/particle.vert.glsl?raw';
 import fragmentShader from '../shaders/particle.frag.glsl?raw';
 
-const Particles = ({ count = 100 }) => {
+const Particles = ({ count = 1000 }) => {
   const pointsRef = useRef<THREE.Points>(null);
 
-  // 粒子初始位置（集中在相机视野内）
+  // 粒子初始位置
   const positions = useMemo(() => {
     const pos = new Float32Array(count * 3);
     for (let i = 0; i < count * 3; i += 3) {
@@ -38,7 +38,7 @@ const Particles = ({ count = 100 }) => {
         uniforms={{
           uTime: { value: 0 }
         }}
-        transparent={false}
+        transparent
         depthWrite={false}
       />
     </points>

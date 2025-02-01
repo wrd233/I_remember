@@ -79,8 +79,14 @@ float snoise(vec3 v) {
 
 void main() {
   vec3 pos = position;
-  float noise = snoise(pos * 0.1 + uTime * 0.5);
-  pos += noise * 2.0;
+  float noise = snoise(pos * 0.05 + uTime * 0.2);
+  pos += noise * 1.0;   // 基于噪声的位置偏移
+
+  // 闪烁动画：基于时间变化的亮度
+  float flicker = sin(uTime * 2.0 + pos.x * 10.0) * 0.3 + 0.7; // 闪烁频率和幅度
+  gl_PointSize = 12.0 * flicker; // 粒子大小随闪烁变化(这里的参数控制了粒子的大小)
+
+  // 随机红色星星：基于位置生成随机值
+  float redStar = step(0.95, snoise(pos * 100.0)); // 5% 的概率生成红色星星
   gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-  gl_PointSize = 8.0;
 }

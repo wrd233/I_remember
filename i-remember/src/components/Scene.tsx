@@ -8,7 +8,7 @@ const Scene = () => {
       <Stats /> {/* 性能监控面板 */}
       <ambientLight intensity={0.5} />
       <pointLight position={[10, 10, 10]} intensity={1} />
-      <Particles count={100} /> {/* 初始粒子数量为 100 */}
+      <Particles count={1000} /> {/* 粒子数量可调整 */}
     </Canvas>
   );
 };
