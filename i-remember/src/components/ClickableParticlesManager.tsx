@@ -1,19 +1,20 @@
-// src/components/ClickableParticlesManager.tsx
 import { useEffect, useState, useRef } from 'react';
 import * as THREE from 'three';
 import { useThree } from '@react-three/fiber';
 import ClickableParticle from './ClickableParticle';
 import { CameraControls } from '@react-three/drei';
+import memories from '../data/memories'; // 导入记忆数据
 
 interface ClickableParticlesManagerProps {
   cameraControlsRef: React.RefObject<CameraControls>;
+  onMemorySelect: (memoryId: number | null) => void; // 新增：传递记忆 ID 的回调函数
 }
 
-const ClickableParticlesManager = ({ cameraControlsRef }: ClickableParticlesManagerProps) => {
+const ClickableParticlesManager = ({ cameraControlsRef, onMemorySelect }: ClickableParticlesManagerProps) => {
   const { scene, camera, raycaster } = useThree();
   const [clickableParticles, setClickableParticles] = useState<THREE.Vector3[]>([]);
   const clickableRefs = useRef<THREE.Mesh[]>([]);
-  const clickedIndexRef = useRef<number | null>(null); // 记录当前点击的粒子索引
+  const clickedIndexRef = useRef<number | null>(null);
 
   // 生成初始粒子位置
   const generateParticlePositions = (count: number) => {
@@ -70,12 +71,16 @@ const ClickableParticlesManager = ({ cameraControlsRef }: ClickableParticlesMana
             true // 启用动画
           );
         }
+
+        // 触发记忆面板显示
+        const memoryId = memories[clickedIndexRef.current]?.id || null; // 获取对应的记忆 ID
+        onMemorySelect(memoryId); // 传递记忆 ID 给父组件
       }
     };
 
     window.addEventListener('pointerdown', handleClick);
     return () => window.removeEventListener('pointerdown', handleClick);
-  }, [camera, raycaster, cameraControlsRef]);
+  }, [camera, raycaster, cameraControlsRef, onMemorySelect]);
 
   return (
     <>

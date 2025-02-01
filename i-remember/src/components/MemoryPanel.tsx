@@ -1,5 +1,5 @@
-import React from 'react';
-import memories from '../data/memories';
+import React, { useEffect } from 'react';
+import memories from '../data/memories.ts'; // 导入记忆数据
 
 interface MemoryPanelProps {
   memoryId: number | null;
@@ -8,6 +8,18 @@ interface MemoryPanelProps {
 
 const MemoryPanel: React.FC<MemoryPanelProps> = ({ memoryId, onClose }) => {
   const memory = memories.find((m) => m.id === memoryId);
+
+  // 监听键盘事件，按下 Esc 键关闭面板
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
 
   if (!memory) {
     return null;
@@ -33,7 +45,6 @@ const MemoryPanel: React.FC<MemoryPanelProps> = ({ memoryId, onClose }) => {
               alt={memory.title}
               style={styles.image}
             />
-            {/* 后续可添加轮播箭头和指示器 */}
           </div>
 
           {/* 正文区域 */}
