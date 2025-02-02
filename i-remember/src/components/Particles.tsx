@@ -4,8 +4,9 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import vertexShader from '../shaders/particle.vert.glsl?raw';
 import fragmentShader from '../shaders/particle.frag.glsl?raw';
+import React from 'react';
 
-const Particles = ({ count = 1000 }) => {
+const Particles = React.memo(({ count = 1000 }) => {
   const pointsRef = useRef<THREE.Points>(null);
 
   // 粒子初始位置
@@ -21,6 +22,8 @@ const Particles = ({ count = 1000 }) => {
 
   // 每帧更新着色器时间
   useFrame(({ clock }) => {
+    console.log('粒子动画更新中...', clock.elapsedTime); // ✅ 检查是否持续输出
+    console.log('pointsRef:', pointsRef.current); // ✅ 检查 pointsRef 是否正常
     if (pointsRef.current?.material) {
       const material = pointsRef.current.material as THREE.ShaderMaterial;
       material.uniforms.uTime.value = clock.getElapsedTime();
@@ -43,6 +46,6 @@ const Particles = ({ count = 1000 }) => {
       />
     </points>
   );
-};
+});
 
 export default Particles;
